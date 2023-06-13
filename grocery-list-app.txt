@@ -1,0 +1,103 @@
+Features:
+
+users can sign into the app with their email and password
+
+users can create recipes with ingredients and instructions
+
+recipes can be marked as public or private
+
+users can view other people’s recipes
+
+ingredients from recipes can be added to user’s grocery lists
+
+users can create their own occasions and assign recipes to occasions
+
+--------------------------------------------------------------
+
+Conceptual Planning:
+
+Users => user_name,email, password : create_recipes => ingredients, instructions, public/private: recipes_list: grocery_list => ingredients: occasions
+
+--------------------------------------------------------------
+
+Users Table:
+User (
+    user_id,
+    user_name,
+    email,
+    password
+)
+
+Recipes(
+    recipe_id,
+    user_id,
+    ingredients,
+    instructions,
+    public T/F
+)
+
+grocery_list(
+    grocery_list_id,
+    recipe_id,
+    user_id
+)
+
+occasions(
+    occasions_id,
+    occasion_name,
+    user_id,
+    recipe_id,
+    occasion_date 
+)
+
+--------------------------------------------------------------
+One-to-One
+User to Grocery List (one user can create one grocery lists)
+
+One-to-Many
+User to Recipes (one user can create many recipes)
+User to Occasions ( one user can create many occasions)
+Recipes to grocery_list ( one grocery list can contain many recipes)
+Recipes to Occasions (one ocassion can have many recipes)
+
+Many-to-Many
+Ingredient to recipes (there are many ingredents for many different recipes)
+Recipes to Occasions (there can be many different recipes used at an occaison and many different occasions that ft the same recipes)
+
+--------------------------------------------------------------
+TABLE CREATION:
+
+ CREATE TABLE users (
+     user_id SERIAL PRIMARY KEY,
+   user_name VARCHAR(60) NOT NULL,
+   email VARCHAR(60) NOT NULL,
+   password VARCHAR(300) NOT NULL
+ )
+ CREATE TABLE ingredients (
+     ingredient_id SERIAL PRIMARY KEY,
+   name VARCHAR(30) NOT NULL
+ )
+ CREATE TABLE recipes (
+     recipes_id SERIAL PRIMARY KEY,
+   user_id INT REFERENCES users(user_id),
+   ingredient_id INT REFERENCES ingredients(ingredient_id),
+   instructions VARCHAR(500) NOT NULL,
+   public BOOLEAN
+ )
+ CREATE TABLE grocery_lists (
+     grocery_list_id SERIAL PRIMARY KEY,
+   ingredient_id INT REFERENCES ingredients(ingredient_id),
+   user_id INT REFERENCES users(user_id),
+   quantity INT NOT NULL
+ )
+ CREATE TABLE occasions (
+     occasions_id SERIAL PRIMARY KEY,
+   user_id INT NOT NULL REFERENCES users(user_id),
+   occasion_name VARCHAR(50) NOT NULL,
+   occasion_date DATE NOT NULL
+ )
+ CREATE TABLE occasion_recipes (
+     occasion_recipe_id SERIAL PRIMARY KEY,
+   recipe_id INT NOT NULL REFERENCES users(user_id),
+   occasion_id INT NOT NULL REFERENCES occasions(occasions_id)
+ );
